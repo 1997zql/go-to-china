@@ -24,3 +24,79 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Print styles: hide navigation/buttons and only print content marked with [data-print-content] */
+@media print {
+  body * { visibility: hidden; }
+  [data-print-content], [data-print-content] * { visibility: visible; }
+  /* place printable content at top-left */
+  [data-print-content] { position: absolute; left: 0; top: 0; width: 100%; }
+  /* remove blur for print */
+  .blur-sm { filter: none !important; }
+  .print\:hidden { display: none !important; }
+}
+
+/* Brand variables: Elegant China Red / Gold */
+:root {
+  --primary-red: #9F1D22;
+  --primary-red-hover: #C53030;
+  --gold: #D4AF37;
+  --bg: #FAFAF8;
+  --text-primary: #1F2937;
+  --text-secondary: #4B4B4B;
+  --card-bg: #ffffff;
+}
+
+/* Global background with subtle warm radial accents */
+.site-bg {
+  background-color: var(--bg);
+  background-image: radial-gradient(400px 200px at 10% 10%, rgba(212,175,55,0.04), transparent 25%), radial-gradient(300px 150px at 85% 80%, rgba(159,29,34,0.03), transparent 25%);
+  background-attachment: fixed;
+}
+
+/* Typography defaults */
+h1 { font-size: 2.25rem; line-height: 1.05; font-weight: 600; color: var(--text-primary); }
+h2 { font-size: 1.5rem; font-weight: 600; color: var(--text-primary); }
+
+p, li { color: var(--text-secondary); }
+
+/* Primary button: elegant red */
+.btn-primary {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.5rem 1.25rem; border-radius: 9999px; font-weight: 600; font-size: 0.875rem;
+  color: #fff; background-image: linear-gradient(90deg, var(--primary-red), var(--primary-red-hover));
+  box-shadow: 0 8px 20px rgba(159,29,34,0.12); transition: transform .06s ease, filter .12s ease;
+}
+.btn-primary:hover { filter: brightness(1.06); }
+.btn-primary:focus { outline: none; box-shadow: 0 0 0 6px rgba(212,175,55,0.12); }
+
+/* Outline button */
+.btn-outline {
+  display:inline-flex; align-items:center; gap:0.5rem; padding:0.4rem 1rem; border-radius:9999px; font-weight:600; font-size:0.875rem;
+  background: #fff; color: var(--primary-red); border: 1px solid var(--primary-red);
+}
+.btn-outline:hover { background: rgba(212,175,55,0.06); color: var(--primary-red-hover); }
+
+/* Card */
+.card {
+  background: var(--card-bg); border-radius: 1rem; padding: 1.25rem; box-shadow: 0 6px 18px rgba(31,41,55,0.06); border: 1px solid rgba(31,41,55,0.06); position: relative;
+}
+.card::before { content: ""; position: absolute; left: 1rem; top: 0.75rem; width: 8px; height: 8px; background: var(--gold); border-radius: 999px; }
+
+/* Gold text (icons, badges) */
+.gold-text { color: var(--gold); }
+
+/* Pill selected/active utilities (used inline in components) */
+.pill-active { background: rgba(159,29,34,0.08); border: 1px solid var(--primary-red); color: #fff; }
+
+/* Print adjustments: keep print black/white, hide interactive elements */
+@media print {
+  .site-bg { background: #ffffff !important; }
+  .btn-primary, .btn-outline, button, .print-hidden, .print\:hidden { display: none !important; }
+  nav, header { display: none !important; }
+  body { color: #000 !important; }
+}
