@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import type { PaywallVariant } from "@/lib/experiment";
+type PaywallVariant = "soft" | "strong";
 
 type PaywallModalProps = {
   open: boolean;
