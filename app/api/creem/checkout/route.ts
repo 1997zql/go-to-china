@@ -5,8 +5,15 @@ type RequestBody = {
   cancelUrl?: string;
 };
 
-const DEFAULT_SUCCESS_URL = "http://localhost:3000/success?src=creem";
-const DEFAULT_CANCEL_URL = "http://localhost:3000/result?canceled=1";
+function resolveBaseUrl(request: Request) {
+  const origin = request.headers.get("origin");
+  if (origin) return origin;
+  const host =
+    request.headers.get("x-forwarded-host") || request.headers.get("host");
+  if (!host) return "http://localhost:3000";
+  const proto = request.headers.get("x-forwarded-proto") || "https";
+  return `${proto}://${host}`;
+}
 
 export async function POST(request: Request) {
   const apiKey = (process.env.CREEM_API_KEY || "").trim();
@@ -26,14 +33,17 @@ export async function POST(request: Request) {
     body = {};
   }
 
-  const successUrl = body.successUrl || DEFAULT_SUCCESS_URL;
-  const cancelUrl = body.cancelUrl || DEFAULT_CANCEL_URL;
+  const baseUrl = resolveBaseUrl(request);
+  const successUrl = body.successUrl || `${baseUrl}/success?src=creem`;
+  const cancelUrl = body.cancelUrl || `${baseUrl}/result?canceled=1`;
 
   const isTestKey = apiKey.startsWith("creem_test_");
-  const baseUrl = isTestKey ? "https://test-api.creem.io" : "https://api.creem.io";
+  const creemBaseUrl = isTestKey
+    ? "https://test-api.creem.io"
+    : "https://api.creem.io";
 
   try {
-    const response = await fetch(`${baseUrl}/v1/checkouts`, {
+    const response = await fetch(`${creemBaseUrl}/v1/checkouts`, {
       method: "POST",
       headers: {
         "x-api-key": apiKey,
@@ -53,7 +63,7 @@ export async function POST(request: Request) {
     if (!response.ok) {
       const text = await response.text().catch(() => "");
       if (text.includes("cancel_url should not exist")) {
-        const retryResponse = await fetch(`${baseUrl}/v1/checkouts`, {
+        const retryResponse = await fetch(`${creemBaseUrl}/v1/checkouts`, {
           method: "POST",
           headers: {
             "x-api-key": apiKey,
@@ -78,7 +88,7 @@ export async function POST(request: Request) {
       }
       if (process.env.NODE_ENV !== "production") {
         console.error("Creem checkout error:", response.status, text);
-        console.error("Creem baseUrl:", baseUrl);
+        console.error("Creem baseUrl:", creemBaseUrl);
           console.error("Creem request body:", {
             product_id: productId,
             success_url: successUrl,
