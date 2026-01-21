@@ -7,7 +7,7 @@ type PaywallModalProps = {
   open: boolean;
   onClose: () => void;
   onUnlock: () => void;
-  variant: PaywallVariant;
+  variant?: PaywallVariant;
   initialStep?: 1 | 2;
 };
 
@@ -21,7 +21,7 @@ export default function PaywallModal({
   open,
   onClose,
   onUnlock,
-  variant,
+  variant = "soft",
   initialStep = 1,
 }: PaywallModalProps) {
   const [step, setStep] = useState<1 | 2>(initialStep);

@@ -1,3 +1,3 @@
-export const PAYWALL_VARIANT = "soft" as const;
+export type PaywallVariant = "soft" | "strong";
 
-export type PaywallVariant = typeof PAYWALL_VARIANT;
+export const PAYWALL_VARIANT: PaywallVariant = "soft";
