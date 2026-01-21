@@ -392,12 +392,14 @@ export default function ResultClient() {
   async function unlock() {
     setPaywallOpen(false);
     try {
+      const origin =
+        typeof window !== "undefined" ? window.location.origin : "";
       const response = await fetch("/api/creem/checkout", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          successUrl: "http://localhost:3000/success?src=creem",
-          cancelUrl: "http://localhost:3000/result?canceled=1",
+          successUrl: origin ? `${origin}/success?src=creem` : undefined,
+          cancelUrl: origin ? `${origin}/result?canceled=1` : undefined,
         }),
       });
       const data = await response.json().catch(() => null);
